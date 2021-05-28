@@ -9,7 +9,9 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert,
+  Platform
 } from 'react-native'
 
 // nhan dau vao la 1 danh sach du lieu (1 mang du lieu)
@@ -78,10 +80,10 @@ const App = () => {
   useEffect(() => {
     console.log('Biến duLieuDanhBaDienThoai được gán hoặc thay đổi');
     console.log('Đang xây dựng giao diện từ dữ liệu duLieuDanhBaDienThoai mới ');
-    
+
     const danhSachGiaoDienMoi = xay_Dung_Danh_Sach_GiaoDien__Tu_Danh_Sach_Du_Lieu(duLieuDanhBaDienThoai)
     console.log('Xây dựng xong giao diện mới từ dữ liệu duLieuDanhBaDienThoai mới ');
-    
+
     console.log('Cập nhật lại giao diện');
     setGiaoDienDanhBa(danhSachGiaoDienMoi)
   }, [duLieuDanhBaDienThoai])
@@ -91,13 +93,13 @@ const App = () => {
   return (
     <SafeAreaView>
       <StatusBar />
-      <View style={styles.khungBao}> 
+      <View style={styles.khungBao}>
         <View
           style={styles.khung}>
           {GiaoDienDanhBa}
         </View>
-        
-        <View style={styles.meCuaTextInput}> 
+
+        <View style={styles.meCuaTextInput}>
           <TextInput
             onChangeText={
               (text) => {
@@ -112,7 +114,21 @@ const App = () => {
             onChangeText={(text) => {
               console.log("sdt la "+ text)
               // Loai bo dau ., hoac bao loi khi nguoi dung nhap dau . vo
-              setSodienThoaiNguoiMoi(text)
+              console.log('text goc ma nguoi dung nhap vao '+ text)
+              var output  = text.replace(/\./g, "")
+
+              console.log('He dieu hanh dang chay '+Platform.OS)
+              const heDieuHanh = Platform.OS
+              if (heDieuHanh == "android") {
+                const textDaThayThe_Lan2 = output.replace(/,/g, "")
+                const textDaThayThe_Lan3 = textDaThayThe_Lan2.replace(/-/g, "")
+                output = textDaThayThe_Lan3.replace(/ /g, "")
+              } else if (heDieuHanh == "ios") {
+                // khong lam gi ca
+              }
+
+              console.log('output cuoi cung '+output)
+              setSodienThoaiNguoiMoi(output)
             }}
             placeholder="Nhập số điện thoại vào đây..."
             style={[
@@ -126,9 +142,15 @@ const App = () => {
             onChangeText={(text) => {
               // console.log("ma mau la "+ text)
               // Chi cho phep nguoi dung nhap vao ma mau:
-              // #f3f3f3
-              // red, green, blue, yellow, white, black, purple, pink
-              setMaMauNguoiMoi(text)
+
+              // ma hex: #f3f3f3
+              // va 1 trong cac mau: red, green, blue, yellow, white, black, purple, pink
+
+              // buoc 1, chuyen chu in hoa thanh chu in thuong
+              const ketquabuoc1_chuinthuong = text.toLowerCase() // red
+
+
+              setMaMauNguoiMoi(ketquabuoc1_chuinthuong)
             }}
             placeholder="Nhập mã màu vào đây..."
             style={[
@@ -140,6 +162,26 @@ const App = () => {
 
         <TouchableOpacity
           onPress={() => {
+            const mang_mau_quy_dinh = ["red", "green", "blue", "yellow", "white", "black", "purple", "pink"]
+            // cach 1: dung ham for () de duyet qua mang de kiem tra xem text nguoi dung nhap co thuoc 1 trong
+            // cach 2: dung ham cua mang
+            const index_cua_mau_nguoi_dung_nhap =  mang_mau_quy_dinh.findIndex((phantu) => {
+              if (phantu == maMauNguoiMoi)
+                return true
+              return false
+            })
+            // const co_tim_thay = index_cua_mau_nguoi_dung_nhap != -1
+            const khong_tim_thay = index_cua_mau_nguoi_dung_nhap == -1
+            if (khong_tim_thay) {
+              Alert.alert('Xin lỗi', "Màu bạn nhập không phù hợp")
+              return
+            }
+
+            // BÀI TẬP VỀ NHÀ:  Xử lý làm sao đấy  để người dùng nhập được mã màu HEXA:
+            // bắt đầu bằng dấu #
+            // có 7 ký tự
+            // .....
+
             // alert('Ban vua bam nut, va gia tri hien tai cua 3 bien la ' + hoVaTenNguoiMoi + "  "+ sodienThoaiNguoiMoi + " " + maMauNguoiMoi)
             const nguoiMoi = {
               name: hoVaTenNguoiMoi,
@@ -150,7 +192,7 @@ const App = () => {
             // push them vao cuoi
             const duLieuTamThoi = [...duLieuDanhBaDienThoai]
             duLieuTamThoi.unshift(nguoiMoi)
-            
+
             console.log('Thêm người mới vào đầu biến duLieuDanhBaDienThoai ');
             setDuLieuDanhBaDienThoai(duLieuTamThoi)
           }}
@@ -158,7 +200,7 @@ const App = () => {
           <Text style={styles.chuCuaNutLuu}>Lưu</Text>
         </TouchableOpacity>
       </View>
-      
+
     </SafeAreaView>
   );
 };
@@ -186,7 +228,7 @@ const styles = {
     fontSize: 16,
     fontWeight: 'bold'
   },
-  contactItem: { 
+  contactItem: {
     flexDirection: 'row',
     width: '80%',
     borderColor: 'gray',
