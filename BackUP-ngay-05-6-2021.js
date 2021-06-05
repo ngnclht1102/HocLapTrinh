@@ -2,7 +2,7 @@ import React, {
   useState,
   useEffect
 } from 'react'
-import moment from 'moment'
+
 import {
   SafeAreaView,
   StatusBar,
@@ -17,12 +17,12 @@ import {
 // nhan dau vao la 1 danh sach du lieu (1 mang du lieu)
 // va no se tao ra 1 mang Giao Dien
 const xay_Dung_Danh_Sach_GiaoDien__Tu_Danh_Sach_Du_Lieu = (danhSachDulieu) => {
-  const mangGiaoDienTamThoi = []
+  const danhsachGiaoDien = []
 
   for (var i = 0; i < danhSachDulieu.length; i++) {
     const nguoi = danhSachDulieu[i];
     const chuCaiDau = nguoi.name[0]
-    mangGiaoDienTamThoi.push(
+    danhsachGiaoDien.push(
       <View style={styles.contactItem}>
         <View style={styles.contactItemLeft}>
           <Text style={[
@@ -33,27 +33,12 @@ const xay_Dung_Danh_Sach_GiaoDien__Tu_Danh_Sach_Du_Lieu = (danhSachDulieu) => {
         <View style={styles.contactItemRight}>
           <Text>Ten: {nguoi.name}</Text>
           <Text>So dien thoai: {nguoi.phone}</Text>
-          <Text>So dien thoai: {nguoi.dob.format('MMM Do YY')}</Text>
         </View>
       </View>
     )
   }
-  return mangGiaoDienTamThoi
-}
 
-const sap_xep_danh_ba_theo_ngay_sinh = (mangOriginal) => {
-  console.log('DU dieu dau vao la ', mangOriginal);
-  mangOriginal.sort((nguoiA, nguoiB) => {
-
-
-    const ngaySinhNguoiA = nguoiA.dob
-    const ngaySinhNguoiB = nguoiB.dob
-
-    const hieu_2_ngay_sinh = ngaySinhNguoiA.diff(ngaySinhNguoiB, 'days')
-    return hieu_2_ngay_sinh
-  })
-  console.log('DU dieu dau ra la ', mangOriginal);
-  return mangOriginal
+  return danhsachGiaoDien
 }
 
 const App = () => {
@@ -62,11 +47,33 @@ const App = () => {
   const [sodienThoaiNguoiMoi, setSodienThoaiNguoiMoi] = useState("")
   const [maMauNguoiMoi, setMaMauNguoiMoi] = useState("")
 
-  const [ngaySinh, setNgaySinh] = useState()
-  const [thangSinh, setThangSinh] = useState()
-  const [namSinh, setNamSinh] = useState()
-
-  const [duLieuDanhBaDienThoai, setDuLieuDanhBaDienThoai] = useState([])
+  const [duLieuDanhBaDienThoai, setDuLieuDanhBaDienThoai] = useState([
+    {
+      name: "Quy",
+      phone: "091234555",
+      color: 'pink',
+    },
+    {
+      name: "Dat",
+      phone: "091234551",
+      color: 'pink',
+    },
+    {
+      name: "Hoang",
+      phone: "091234552",
+      color: 'violet',
+    },
+    {
+      name: "Hoa",
+      phone: "091234559",
+      color: 'yellow',
+    },
+    {
+      name: "Nghia",
+      phone: "091234999",
+      color: 'red',
+    },
+  ])
   const [GiaoDienDanhBa, setGiaoDienDanhBa] = useState(null)
 
   // bất cứ khi nào, cái biến duLieuDanhBaDienThoai được gán, hoặc bị thay đổi (thêm vào đầu, thêm vào cuối, ...)
@@ -151,43 +158,6 @@ const App = () => {
               styles.dungKhoangCachPhiaTrenNho
             ]}
           />
-          <View style={styles.khungNhapNgayThangNam}>
-            <TextInput
-              onChangeText={(text) => {
-                setNgaySinh(text)
-              }}
-              placeholder="Nhập ngày sinh..."
-              style={[
-                styles.InputDungChung,
-                styles.dungKhoangCachPhiaTrenNho
-              ]}
-              keyboardType="numeric"
-            />
-            <TextInput
-              onChangeText={(text) => {
-                // var thangSinhTamThoi = parseInt(text)
-                setThangSinh(text)
-              }}
-              placeholder="Nhập tháng sinh..."
-              style={[
-                styles.InputDungChung,
-                styles.dungKhoangCachPhiaTrenNho
-              ]}
-              keyboardType="numeric"
-            />
-            <TextInput
-              onChangeText={(text) => {
-                // var namSinhTamThoi = parseInt(text)
-                setNamSinh(text)
-              }}
-              placeholder="Nhập năm sinh..."
-              style={[
-                styles.InputDungChung,
-                styles.dungKhoangCachPhiaTrenNho
-              ]}
-              keyboardType="numeric"
-            />
-          </View>
         </View>
 
         <TouchableOpacity
@@ -207,25 +177,18 @@ const App = () => {
               return
             }
 
-            // 31-05-1999
-            const chuoiNgay =  ngaySinh + '-' + thangSinh  + '-' + namSinh
-            const doiTuongNgay = moment(chuoiNgay, 'DD-MM-YYYY')
-            const cophailangayhople = doiTuongNgay.isValid()
-
-            // if ( cophailangayhople == false) {
-            if (!cophailangayhople) {
-              Alert.alert('Xin lỗi', "Mày nhập như thế này là ngu rồi!")
-              return
-            }
+            // BÀI TẬP VỀ NHÀ:  Xử lý làm sao đấy  để người dùng nhập được mã màu HEXA:
+            // bắt đầu bằng dấu #
+            // có 7 ký tự
+            // .....
 
             // alert('Ban vua bam nut, va gia tri hien tai cua 3 bien la ' + hoVaTenNguoiMoi + "  "+ sodienThoaiNguoiMoi + " " + maMauNguoiMoi)
             const nguoiMoi = {
               name: hoVaTenNguoiMoi,
               phone: sodienThoaiNguoiMoi,
               color: maMauNguoiMoi,
-              dob: doiTuongNgay
             }
-            console.log(nguoiMoi);
+            // console.log(nguoiMoi);
             // push them vao cuoi
             const duLieuTamThoi = [...duLieuDanhBaDienThoai]
             duLieuTamThoi.unshift(nguoiMoi)
@@ -233,16 +196,8 @@ const App = () => {
             console.log('Thêm người mới vào đầu biến duLieuDanhBaDienThoai ');
             setDuLieuDanhBaDienThoai(duLieuTamThoi)
           }}
-          style={styles.button}>
-          <Text style={styles.buttonTitle}>Lưu</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            const duLieuMoiDaSapXep = sap_xep_danh_ba_theo_ngay_sinh(duLieuDanhBaDienThoai)
-            setDuLieuDanhBaDienThoai(duLieuMoiDaSapXep)
-          }}
-          style={styles.button}>
-          <Text style={styles.buttonTitle}>Sắp xếp</Text>
+          style={styles.nutLuu}>
+          <Text style={styles.chuCuaNutLuu}>Lưu</Text>
         </TouchableOpacity>
       </View>
 
@@ -257,11 +212,10 @@ const styles = {
     alignItems: 'center'
   },
   meCuaTextInput: {
-    width: '100%'
     // borderWidth: 1,
     // borderColor: 'red',
   },
-  button: {
+  nutLuu: {
     backgroundColor: '#4fc3f7',
     width: 70,
     alignItems: 'center',
@@ -269,7 +223,7 @@ const styles = {
     paddingVertical: 10,
     borderRadius: 5,
   },
-  buttonTitle: {
+  chuCuaNutLuu: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold'
@@ -306,9 +260,6 @@ const styles = {
   },
   dungKhoangCachPhiaTrenNho: {
     marginTop: 6,
-  },
-  khungNhapNgayThangNam: {
-    flexDirection:  'row'
   }
 
 }
