@@ -13,7 +13,6 @@ import {
   Alert,
   Platform
 } from 'react-native'
-import lodashsss from 'lodash'
 
 // nhan dau vao la 1 danh sach du lieu (1 mang du lieu)
 // va no se tao ra 1 mang Giao Dien
@@ -79,7 +78,7 @@ const App = () => {
     const danhSachGiaoDienMoi = xay_Dung_Danh_Sach_GiaoDien__Tu_Danh_Sach_Du_Lieu(duLieuDanhBaDienThoai)
     console.log('Xây dựng xong giao diện mới từ dữ liệu duLieuDanhBaDienThoai mới ');
 
-    console.log('Cập nhật lại giao diện')
+    console.log('Cập nhật lại giao diện');
     setGiaoDienDanhBa(danhSachGiaoDienMoi)
   }, [duLieuDanhBaDienThoai])
 
@@ -165,30 +164,6 @@ const App = () => {
     const duLieuMoiDaSapXepBienMoi = [...duLieuMoiDaSapXep]
     console.log('duLieuMoiDaSapXep', duLieuMoiDaSapXepBienMoi);
     setDuLieuDanhBaDienThoai(duLieuMoiDaSapXepBienMoi)
-  }
-
-  const baiTapmang = () => {
-    // Map
-    const stn = [1,5,7,8,9,5,7,4,4,5,7,4,4,5,8,5,5,2]
-    // yeu cau bai toan: tao 1 mang [ 5, 25, 35 ... ]
-    // const mangMinhCanTim =  stn.map(i => i * 5)
-    // const mangMinhCanTim = stn.map((i) => {
-    //   return i * 5;
-    // })
-    // console.log('mangMinhCanTim', mangMinhCanTim );
-
-    // tinh tong tat ca phan cu mangMinhCanTim
-    const final = stn.reduce((accumulator, currentValue) => {
-      console.log(' accumulator '+ accumulator);
-      console.log(' currentValue '+ currentValue);
-      console.log(' =========== ');
-      return accumulator + currentValue;
-    })
-    // const final = stn.reduce((accumulator, currentValue) => accumulator + currentValue)
-    console.log('final ', final)
-
-    const mangMoi = lodashsss.chunk(stn, 3)
-    console.log('mangMoi split by 3', mangMoi);
   }
 
   return (
@@ -293,11 +268,6 @@ const App = () => {
           onPress={hamLuu}
           style={styles.button}>
           <Text style={styles.buttonTitle}>Lưu</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={baiTapmang}
-          style={styles.button}>
-          <Text style={styles.buttonTitle}>Mảng</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={hamSapXep}
